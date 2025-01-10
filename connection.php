@@ -23,7 +23,8 @@ if ($connection->connect_error) {
 //     "CREATE TABLE IF NOT EXISTS users (
 //         id INT AUTO_INCREMENT PRIMARY KEY,
 //         username VARCHAR(50) NOT NULL,
-//         password VARCHAR(255) NOT NULL
+//         password VARCHAR(255) NOT NULL,
+//         usertype VARCHAR(50) NOT NULL
 //     )",
 //     "Table 'users' created successfully."
 // );
@@ -80,12 +81,25 @@ if ($connection->connect_error) {
 
 // $username = "admin";
 // $password = "12366";
+// $usertype = "admin";
 // $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 // insertData(
 //     $connection,
-//     "INSERT INTO users (username, password) VALUES ('$username', '$hashed_password')",
+//     "INSERT INTO users (username, password, usertype) VALUES ('$username', '$hashed_password', '$usertype')",
 //     "Admin user created successfully."
+// );
+
+
+// $username = "employee";
+// $password = "12366";
+// $usertype = "employee";
+// $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+// insertData(
+//     $connection,
+//     "INSERT INTO users (username, password, usertype) VALUES ('$username', '$hashed_password', '$usertype')",
+//     "Employee user created successfully."
 // );
 
 
@@ -111,3 +125,25 @@ if ($connection->connect_error) {
 //         (1, 'Medical leave', 'Pending')",
 //     "Leave record added successfully."
 // );
+
+
+function loginUser($username, $password) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT id, password, usertype FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->bind_result($id, $hashedPassword, $usertype);
+    if ($stmt->fetch() && password_verify($password, $hashedPassword)) {
+        $_SESSION['user_id'] = $id;
+        $_SESSION['usertype'] = $usertype;
+        if ($usertype === 'admin') {
+            header("Location: admin_dashboard.php");
+        } else {
+            header("Location: employee_dashboard.php");
+        }
+        exit();
+    } else {
+        // Handle login failure
+    }
+    $stmt->close();
+}

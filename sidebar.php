@@ -1,3 +1,10 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+$usertype = $_SESSION['usertype'];
+?>
+
 <!-- Sidebar -->
 <div class="col-md-3 col-lg-2 sidebar">
     <h4 class="text-white text-center mb-4">HRM System</h4>
@@ -6,6 +13,7 @@
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
         
+        <?php if ($usertype === 'admin'): ?>
         <div class="nav-item dropend">
             <a class="nav-link dropdown-toggle" href="#" id="employeeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-people"></i> Employees
@@ -19,6 +27,7 @@
                 </a></li>
             </ul>
         </div>
+        <?php endif; ?>
         
         <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'attendance.php' ? 'active' : ''; ?>" href="attendance.php">
             <i class="bi bi-calendar-check"></i> Attendance

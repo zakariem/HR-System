@@ -5,6 +5,10 @@ include 'connection.php';
 
 $error_message = "";
 
+// Initialize input fields to empty
+$username = "";
+$password = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = trim($_POST['password']);
@@ -20,7 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (password_verify($password, $user['password'])) {
             $_SESSION['loggedin'] = true;
             $_SESSION['username'] = $user['username'];
+            $_SESSION['usertype'] = $user['usertype'];
 
+            // Redirect to the unified dashboard
             header('Location: dashboard.php');
             exit();
         } else {
@@ -33,8 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -84,15 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form method="POST">
+        <form method="POST" id="loginForm">
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input type="text" id="username" name="username" class="form-control" required>
+                <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($username); ?>" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="password-container">
-                    <input type="password" id="password" name="password" class="form-control" required>
+                    <input type="password" id="password" name="password" class="form-control" value="" required>
                     <i class="password-toggle bi bi-eye-slash" id="togglePassword"></i>
                 </div>
             </div>

@@ -1,9 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['username'])) {
-    header('Location: index.php');
+    header('Location: not_authorized.php');
     exit();
 }
+
+$usertype = $_SESSION['usertype'];
 
 // Handle logout
 if (isset($_GET['logout'])) {
@@ -54,6 +56,7 @@ if (isset($_GET['logout'])) {
                 </div>
 
                 <div class="row">
+                    <?php if ($usertype === 'admin'): ?>
                     <div class="col-md-4 mb-4">
                         <div class="card bg-primary text-white">
                             <div class="card-body">
@@ -63,6 +66,7 @@ if (isset($_GET['logout'])) {
                             </div>
                         </div>
                     </div>
+                    <?php endif; ?>
 
                     <div class="col-md-4 mb-4">
                         <div class="card bg-success text-white">
